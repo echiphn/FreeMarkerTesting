@@ -1,7 +1,7 @@
 package org.freemarker.advance;
 
 import static org.hamcrest.MatcherAssert.*;
-
+import static org.hamcrest.Matchers.*;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
@@ -38,6 +38,18 @@ public class TemplateCachingTest {
 			Template newTemplate = configuration.getTemplate("helloworld.ftl");
 			assertThat(template, IsSame.sameInstance(newTemplate));
 		}
+	}
+	
+	@Test
+	public void testCaching_CleanCache() throws Exception {
+		Template template = configuration.getTemplate("helloworld.ftl");
+		for (int i = 0; i < 100; i++) {
+			Template newTemplate = configuration.getTemplate("helloworld.ftl");
+			assertThat(template, IsSame.sameInstance(newTemplate));
+		}
+		configuration.clearTemplateCache();
+		Template newLoadedTemplate = configuration.getTemplate("helloworld.ftl");
+		assertThat(template, not(IsSame.sameInstance(newLoadedTemplate)));
 	}
 
 }
